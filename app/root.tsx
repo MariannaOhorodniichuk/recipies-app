@@ -6,9 +6,11 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-
+import { Provider } from 'react-redux';
+import store from './stores/store';
 import type { Route } from "./+types/root";
 import "./app.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -22,6 +24,8 @@ export const links: Route.LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
+
+export const queryClient = new QueryClient()
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -42,7 +46,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <Provider store={store}> 
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+      </QueryClientProvider>
+    </Provider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
